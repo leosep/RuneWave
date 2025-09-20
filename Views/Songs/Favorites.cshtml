@@ -1,0 +1,46 @@
+@model IEnumerable<SpotifyClone.Models.Song>
+
+@{
+    ViewData["Title"] = "Favorite Songs";
+}
+
+<div class="container mx-auto">
+    <h2 class="text-3xl font-bold mb-8">Favorite Songs</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach (var song in Model)
+        {
+            <div class="bg-gray-800 p-6 rounded-lg">
+                @if (string.IsNullOrEmpty(song.AlbumArtUrl) || song.AlbumArtUrl.Contains("via.placeholder.com"))
+                {
+                    <div class="w-32 h-32 mb-4 rounded bg-gray-600 flex items-center justify-center text-gray-400 text-sm">
+                        No Art
+                    </div>
+                }
+                else
+                {
+                    <img src="@song.AlbumArtUrl" alt="Album Art" class="w-32 h-32 mb-4 rounded" />
+                }
+                <h5 class="text-xl font-semibold mb-2">@song.Title</h5>
+                <p class="text-gray-300">Artist: @song.Artist</p>
+                <p class="text-gray-300">Album: @song.Album</p>
+                <div class="flex space-x-2 mt-4">
+                    <button onclick="playSong(@song.Id, '@song.Title', '/Songs/Stream/@song.Id')" class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">Play</button>
+                    <button onclick="toggleFavorite(@song.Id)" class="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded">❤️</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <p class="mt-8"><a asp-action="Index" class="text-green-500 hover:text-green-400">Back to Songs</a></p>
+</div>
+
+<script>
+    function toggleFavorite(songId) {
+        fetch('/Songs/ToggleFavorite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ songId: songId })
+        }).then(() => location.reload());
+    }
+</script>

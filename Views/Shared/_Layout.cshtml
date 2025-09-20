@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RuneWave</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-gray-900 text-white">
+    <div id="sidebar" class="w-60 bg-black p-6 fixed h-screen overflow-y-auto z-50 hidden md:block">
+        <div class="flex justify-between items-center mb-8">
+            <a class="text-white text-2xl font-bold" asp-area="" asp-controller="Home" asp-action="Index">RuneWave</a>
+            <button onclick="toggleSidebar()" class="md:hidden text-white text-2xl">&times;</button>
+        </div>
+        <ul class="space-y-4">
+            <li>
+                <a class="text-gray-300 hover:text-white block" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <li>
+                    <a class="text-gray-300 hover:text-white block" asp-controller="Songs" asp-action="Index">Your Songs</a>
+                </li>
+                <li>
+                    <a class="text-gray-300 hover:text-white block" asp-controller="Songs" asp-action="RecentlyPlayed">Recently Played</a>
+                </li>
+                <li>
+                    <a class="text-gray-300 hover:text-white block" asp-controller="Songs" asp-action="Favorites">Favorites</a>
+                </li>
+                <li>
+                    <a class="text-gray-300 hover:text-white block" asp-controller="Playlists" asp-action="Index">Your Playlists</a>
+                </li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="text-gray-300 hover:text-white block bg-transparent border-none">Logout</button>
+                    </form>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a class="text-gray-300 hover:text-white block" asp-controller="Account" asp-action="Login">Login</a>
+                </li>
+                <li>
+                    <a class="text-gray-300 hover:text-white block" asp-controller="Account" asp-action="Register">Register</a>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="ml-0 md:ml-60 p-6 bg-gray-900 min-h-screen pb-24">
+        <button onclick="toggleSidebar()" class="md:hidden bg-gray-700 text-white p-2 rounded mb-4">☰</button>
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <div class="fixed bottom-0 left-0 md:left-60 right-0 h-24 bg-gray-800 border-t border-gray-700 p-4 flex items-center z-50">
+        <div class="flex items-center space-x-4 flex-1">
+            <div id="player-song-title" class="text-white">No song playing</div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button onclick="prevSong()" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-2 rounded">⏮</button>
+            <button id="play-pause-btn" onclick="togglePlayPause()" class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded relative">
+                <span id="play-spinner" class="hidden absolute inset-0 flex items-center justify-center">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </span>
+                <span id="play-icon">▶</span>
+            </button>
+            <button onclick="nextSong()" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-2 rounded">⏭</button>
+        </div>
+        <div class="flex items-center space-x-4 ml-4">
+            <span id="player-current-time" class="text-gray-400 text-sm">0:00</span>
+            <input type="range" id="player-progress" min="0" max="100" value="0" onchange="seekTo(this.value)" class="w-32">
+            <span id="player-duration" class="text-gray-400 text-sm">0:00</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-2 ml-4">
+            <span class="text-gray-400">🔊</span>
+            <input type="range" min="0" max="100" value="50" onchange="setVolume(this.value)" class="w-20">
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/player.js" asp-append-version="true"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

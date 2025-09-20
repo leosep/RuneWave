@@ -1,0 +1,197 @@
+@model SpotifyClone.Models.Playlist
+
+@{
+    ViewData["Title"] = "Playlist Details";
+}
+
+<div class="container mx-auto">
+    <h2 class="text-3xl font-bold mb-8">@Model.Name</h2>
+
+    <h3 class="text-2xl font-semibold mb-4">Songs</h3>
+    <div class="mb-4">
+        <button onclick="playAllSongs()" class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">▶ Play All</button>
+    </div>
+    <ul id="playlist-songs" class="space-y-2">
+        @foreach (var ps in Model.PlaylistSongs.OrderBy(ps => ps.Id))
+        {
+            <li class="bg-gray-800 p-4 rounded flex items-center justify-between draggable" data-song-id="@ps.Song.Id" draggable="true">
+                <div class="flex items-center">
+                    @if (string.IsNullOrEmpty(ps.Song.AlbumArtUrl) || ps.Song.AlbumArtUrl.Contains("via.placeholder.com"))
+                    {
+                        <div class="w-12 h-12 mr-4 rounded bg-gray-600 flex items-center justify-center text-gray-400 text-xs">
+                            No Art
+                        </div>
+                    }
+                    else
+                    {
+                        <img src="@ps.Song.AlbumArtUrl" alt="Album Art" class="w-12 h-12 mr-4 rounded" />
+                    }
+                    <div>
+                        <div class="font-semibold">@ps.Song.Title</div>
+                        <div class="text-gray-400">@ps.Song.Artist</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="playSong(@ps.Song.Id, '@ps.Song.Title', '/Songs/Stream/@ps.Song.Id', 'play-btn-@ps.Song.Id')" class="bg-green-500 hover:bg-green-400 text-white px-3 py-1 rounded text-sm relative" id="play-btn-@ps.Song.Id">
+                        <span class="play-spinner-@ps.Song.Id hidden absolute inset-0 flex items-center justify-center">
+                            <svg class="animate-spin h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
+                        <span class="play-icon-@ps.Song.Id">Play</span>
+                    </button>
+                    <button onclick="removeSong(@Model.Id, @ps.Song.Id, '@ps.Song.Title')" class="bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded text-sm">Remove</button>
+                    <span class="cursor-move">⋮⋮</span>
+                </div>
+            </li>
+        }
+    </ul>
+
+    <h3 class="text-2xl font-semibold mb-4 mt-8">Add Song</h3>
+    <form asp-action="AddSong" method="post" class="space-y-4">
+        <input type="hidden" name="playlistId" value="@Model.Id" />
+        <div>
+            <label for="songId" class="block text-sm font-medium mb-2">Select Song</label>
+            <select name="songId" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white" required>
+                <option value="">Choose a song</option>
+                @foreach (var song in ViewBag.AvailableSongs as IEnumerable<SpotifyClone.Models.Song>)
+                {
+                    <option value="@song.Id">@song.Title - @song.Artist</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">Add Song</button>
+    </form>
+
+    <p class="mt-8"><a asp-action="Index" class="text-green-500 hover:text-green-400">Back to Playlists</a></p>
+</div>
+
+<script>
+    const playlistSongs = document.getElementById('playlist-songs');
+    let draggedElement = null;
+
+    playlistSongs.addEventListener('dragstart', (e) => {
+        draggedElement = e.target;
+        e.target.classList.add('opacity-50');
+    });
+
+    playlistSongs.addEventListener('dragend', (e) => {
+        e.target.classList.remove('opacity-50');
+    });
+
+    playlistSongs.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(playlistSongs, e.clientY);
+        if (afterElement == null) {
+            playlistSongs.appendChild(draggedElement);
+        } else {
+            playlistSongs.insertBefore(draggedElement, afterElement);
+        }
+    });
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.draggable:not(.opacity-50)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // Save order on drop
+    playlistSongs.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        const songIds = [...playlistSongs.querySelectorAll('.draggable')].map(el => el.dataset.songId);
+        // Send to server to update order
+        await fetch('/Playlists/UpdateOrder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ playlistId: @Model.Id, songIds: songIds })
+        });
+    });
+
+    // Play all songs in playlist
+    function playAllSongs() {
+        const songElements = document.querySelectorAll('.draggable');
+        const songs = [];
+
+        songElements.forEach(element => {
+            const songId = parseInt(element.dataset.songId);
+            const titleElement = element.querySelector('.font-semibold');
+            const artistElement = element.querySelector('.text-gray-400');
+
+            if (titleElement && artistElement) {
+                songs.push({
+                    id: songId,
+                    title: titleElement.textContent,
+                    filePath: '/Songs/Stream/' + songId
+                });
+            }
+        });
+
+        if (songs.length > 0) {
+            setPlaylist(songs);
+            playSong(songs[0].id, songs[0].title, songs[0].filePath);
+        }
+    }
+
+    // Delete playlist with confirmation
+    function deletePlaylist(playlistId, playlistName) {
+        if (confirm(`Are you sure you want to delete the playlist "${playlistName}"? This action cannot be undone.`)) {
+            fetch('/Playlists/Delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ id: playlistId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Playlist deleted successfully');
+                    window.location.href = '/Playlists';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the playlist');
+            });
+        }
+    }
+
+    // Remove song from playlist with confirmation
+    function removeSong(playlistId, songId, songTitle) {
+        if (confirm(`Are you sure you want to remove "${songTitle}" from this playlist?`)) {
+            fetch('/Playlists/RemoveSong', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ playlistId: playlistId, songId: songId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Song removed from playlist');
+                    location.reload(); // Refresh to show updated playlist
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while removing the song');
+            });
+        }
+    }
+</script>
