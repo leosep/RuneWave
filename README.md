@@ -31,7 +31,7 @@ RuneWave is a music streaming web application built with ASP.NET Core, inspired 
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/leosep/RuneWave.git
    cd RuneWave
    ```
 
