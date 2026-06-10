@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button onclick="playSong(@ps.Song.Id, '@ps.Song.Title', '/Songs/Stream/@ps.Song.Id', 'play-btn-@ps.Song.Id')" class="bg-green-500 hover:bg-green-400 text-white px-3 py-1 rounded text-sm relative" id="play-btn-@ps.Song.Id">
+                    <button onclick="playSongExt(@ps.Song.Id, '@ps.Song.Title', '@ps.Song.Artist', '@ps.Song.AlbumArtUrl', 'play-btn-@ps.Song.Id')" class="bg-green-500 hover:bg-green-400 text-white px-3 py-1 rounded text-sm relative song-card" id="play-btn-@ps.Song.Id">
                         <span class="play-spinner-@ps.Song.Id hidden absolute inset-0 flex items-center justify-center">
                             <svg class="animate-spin h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -124,12 +124,14 @@
         songElements.forEach(element => {
             const songId = parseInt(element.dataset.songId);
             const titleElement = element.querySelector('.font-semibold');
-            const artistElement = element.querySelector('.text-gray-400');
+            const infoDiv = element.querySelector('.text-gray-400');
 
-            if (titleElement && artistElement) {
+            if (titleElement) {
+                const artistFull = infoDiv ? infoDiv.textContent : '';
                 songs.push({
                     id: songId,
                     title: titleElement.textContent,
+                    artist: artistFull,
                     filePath: '/Songs/Stream/' + songId
                 });
             }
@@ -137,7 +139,7 @@
 
         if (songs.length > 0) {
             setPlaylist(songs);
-            playSong(songs[0].id, songs[0].title, songs[0].filePath);
+            playSongExt(songs[0].id, songs[0].title, songs[0].artist || '', '', 'play-all-btn');
         }
     }
 

@@ -54,31 +54,48 @@
             @RenderBody()
         </main>
     </div>
-    <div class="fixed bottom-0 left-0 md:left-60 right-0 h-24 bg-gray-800 border-t border-gray-700 p-4 flex items-center z-50">
-        <div class="flex items-center space-x-4 flex-1">
-            <div id="player-song-title" class="text-white">No song playing</div>
-        </div>
-        <div class="flex items-center space-x-4">
-            <button onclick="prevSong()" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-2 rounded">⏮</button>
-            <button id="play-pause-btn" onclick="togglePlayPause()" class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded relative">
-                <span id="play-spinner" class="hidden absolute inset-0 flex items-center justify-center">
-                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                </span>
-                <span id="play-icon">▶</span>
-            </button>
-            <button onclick="nextSong()" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-2 rounded">⏭</button>
-        </div>
-        <div class="flex items-center space-x-4 ml-4">
-            <span id="player-current-time" class="text-gray-400 text-sm">0:00</span>
-            <input type="range" id="player-progress" min="0" max="100" value="0" onchange="seekTo(this.value)" class="w-32">
-            <span id="player-duration" class="text-gray-400 text-sm">0:00</span>
-        </div>
-        <div class="hidden md:flex items-center space-x-2 ml-4">
-            <span class="text-gray-400">🔊</span>
-            <input type="range" min="0" max="100" value="50" onchange="setVolume(this.value)" class="w-20">
+    <div class="fixed bottom-0 left-0 md:left-60 right-0 bg-gray-800 border-t border-gray-700 z-50">
+        <div class="flex items-center h-20 px-4">
+            <div class="hidden md:flex items-center w-1/4 min-w-0">
+                <div id="player-art" class="w-10 h-10 rounded bg-gray-600 flex-shrink-0 mr-3 flex items-center justify-center text-gray-400 text-xs">♪</div>
+                <div class="min-w-0">
+                    <div id="player-song-title" class="text-white text-sm font-medium truncate">No song playing</div>
+                    <div id="player-artist" class="text-gray-400 text-xs truncate"></div>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center flex-1 min-w-0">
+                <div class="flex items-center space-x-3 md:space-x-4 mb-1">
+                    <button id="shuffle-btn" onclick="toggleShuffle()" class="text-gray-400 hover:text-white text-sm" title="Shuffle">🔀</button>
+                    <button onclick="prevSong()" class="text-white hover:text-gray-300 text-lg">⏮</button>
+                    <button id="play-pause-btn" onclick="togglePlayPause()" class="bg-white text-black w-9 h-9 rounded-full flex items-center justify-center hover:scale-105 transition-transform relative">
+                        <span id="play-spinner" class="hidden absolute inset-0 flex items-center justify-center">
+                            <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
+                        <span id="play-icon" class="text-base">▶</span>
+                    </button>
+                    <button onclick="nextSong()" class="text-white hover:text-gray-300 text-lg">⏭</button>
+                    <button id="loop-btn" onclick="toggleLoop()" class="text-gray-400 hover:text-white text-sm" title="Loop: Off">🔁</button>
+                </div>
+                <div class="flex items-center space-x-2 w-full max-w-md">
+                    <span id="player-current-time" class="text-gray-400 text-xs w-8 text-right">0:00</span>
+                    <input type="range" id="player-progress" min="0" max="100" value="0" oninput="seekTo(this.value)" class="flex-1 h-1">
+                    <span id="player-duration" class="text-gray-400 text-xs w-8">0:00</span>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-3 w-1/4 justify-end">
+                <div class="flex items-center space-x-1">
+                    <span class="text-gray-400 text-xs">🔊</span>
+                    <input type="range" id="volume-slider" min="0" max="100" value="50" oninput="setVolume(this.value)" class="w-20 h-1">
+                </div>
+                <div class="relative">
+                    <button id="add-to-playlist-btn" onclick="showPlayerPlaylistMenu()" class="text-gray-400 hover:text-white text-lg px-2" title="Add to playlist">📋</button>
+                </div>
+            </div>
         </div>
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

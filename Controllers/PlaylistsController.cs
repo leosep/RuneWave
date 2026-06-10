@@ -55,6 +55,17 @@ public class PlaylistsController : Controller
         return RedirectToAction("Index");
     }
 
+    public async Task<IActionResult> ListJson()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var playlists = await _context.Playlists
+            .Where(p => p.UserId == userId)
+            .OrderBy(p => p.Name)
+            .Select(p => new { p.Id, p.Name })
+            .ToListAsync();
+        return Json(playlists);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddSong(int playlistId, int songId)
     {

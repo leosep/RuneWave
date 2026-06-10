@@ -1,1 +1,56 @@
-/* Custom styles if needed */
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: #4b5563;
+    border-radius: 2px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #22c55e;
+    margin-top: -4px;
+}
+
+input[type=range]::-moz-range-track {
+    height: 4px;
+    background: #4b5563;
+    border-radius: 2px;
+    border: none;
+}
+
+input[type=range]::-moz-range-thumb {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: none;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+#player-progress::-webkit-slider-thumb {
+    background: #22c55e;
+}
+
+#player-progress::-moz-range-thumb {
+    background: #22c55e;
+}
+
+#volume-slider::-webkit-slider-runnable-track {
+    height: 3px;
+}
+
+#volume-slider::-moz-range-track {
+    height: 3px;
+}
