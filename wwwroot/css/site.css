@@ -4,53 +4,139 @@ input[type=range] {
     background: transparent;
     cursor: pointer;
 }
+input[type=range]::-webkit-slider-runnable-track { height: 4px; background: #4b5563; border-radius: 2px; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #22c55e; margin-top: -4px; }
+input[type=range]::-moz-range-track { height: 4px; background: #4b5563; border-radius: 2px; border: none; }
+input[type=range]::-moz-range-thumb { height: 12px; width: 12px; border-radius: 50%; background: #22c55e; border: none; }
+input[type=range]:focus { outline: none; }
+#player-progress::-webkit-slider-thumb { background: #22c55e; }
+#player-progress::-moz-range-thumb { background: #22c55e; }
+#volume-slider::-webkit-slider-runnable-track { height: 3px; }
+#volume-slider::-moz-range-track { height: 3px; }
 
-input[type=range]::-webkit-slider-runnable-track {
+.player-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    color: #b3b3b3;
+    background: transparent;
+}
+.player-btn:hover { color: #fff; }
+.player-btn:active { transform: scale(0.88); }
+.player-btn.active { color: #22c55e; }
+.player-btn.active:hover { color: #4ade80; }
+
+.player-btn-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+.player-btn-sm svg { width: 16px; height: 16px; }
+
+.player-btn-play {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    color: #000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    font-size: 14px;
+}
+.player-btn-play:hover { transform: scale(1.06); background: #e5e7eb; }
+.player-btn-play:active { transform: scale(0.92); }
+
+.loop-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 8px;
+    font-weight: 700;
+    background: #22c55e;
+    color: #000;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.loop-btn-wrap { position: relative; display: inline-flex; }
+
+.progress-wrap {
+    position: relative;
+    flex: 1;
     height: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.progress-track {
+    position: absolute;
+    inset: 0;
     background: #4b5563;
     border-radius: 2px;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 12px;
-    width: 12px;
-    border-radius: 50%;
-    background: #22c55e;
-    margin-top: -4px;
-}
-
-input[type=range]::-moz-range-track {
+    overflow: hidden;
     height: 4px;
-    background: #4b5563;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.progress-fill {
+    height: 100%;
+    background: #fff;
     border-radius: 2px;
-    border: none;
+    transition: background 0.15s;
+    width: 0%;
 }
-
-input[type=range]::-moz-range-thumb {
-    height: 12px;
+.progress-wrap:hover .progress-fill { background: #22c55e; }
+.progress-thumb {
+    position: absolute;
+    top: 50%;
     width: 12px;
+    height: 12px;
+    background: #fff;
     border-radius: 50%;
-    background: #22c55e;
-    border: none;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.12s ease;
+    z-index: 2;
+    pointer-events: none;
+}
+.progress-wrap:hover .progress-thumb { transform: translate(-50%, -50%) scale(1); }
+#player-progress {
+    position: absolute;
+    inset: -6px 0;
+    width: 100%;
+    height: calc(100% + 12px);
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
 }
 
-input[type=range]:focus {
-    outline: none;
-}
+.tabular-nums { font-variant-numeric: tabular-nums; }
 
-#player-progress::-webkit-slider-thumb {
-    background: #22c55e;
+.player-art {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    overflow: hidden;
 }
-
-#player-progress::-moz-range-thumb {
-    background: #22c55e;
-}
-
-#volume-slider::-webkit-slider-runnable-track {
-    height: 3px;
-}
-
-#volume-slider::-moz-range-track {
-    height: 3px;
+.player-art img { width: 100%; height: 100%; object-fit: cover; }
+.player-art-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #374151;
+    color: #6b7280;
+    font-size: 18px;
 }
