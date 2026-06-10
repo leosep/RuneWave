@@ -23,6 +23,11 @@ input[type=range]:focus { outline: none; }
     transition: all 0.12s ease;
     color: #b3b3b3;
     background: transparent;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 .player-btn:hover { color: #fff; }
 .player-btn:active { transform: scale(0.88); }
@@ -30,15 +35,15 @@ input[type=range]:focus { outline: none; }
 .player-btn.active:hover { color: #4ade80; }
 
 .player-btn-sm {
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
 }
-.player-btn-sm svg { width: 16px; height: 16px; }
+.player-btn-sm svg { width: 20px; height: 20px; }
 
 .player-btn-play {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background: #fff;
     color: #000;
@@ -48,22 +53,24 @@ input[type=range]:focus { outline: none; }
     border: none;
     cursor: pointer;
     transition: all 0.12s ease;
-    font-size: 14px;
+    font-size: 16px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 .player-btn-play:hover { transform: scale(1.06); background: #e5e7eb; }
 .player-btn-play:active { transform: scale(0.92); }
 
 .loop-badge {
     position: absolute;
-    top: -4px;
-    right: -4px;
-    font-size: 8px;
+    top: -2px;
+    right: -2px;
+    font-size: 9px;
     font-weight: 700;
     background: #22c55e;
     color: #000;
     border-radius: 50%;
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -110,21 +117,29 @@ input[type=range]:focus { outline: none; }
     pointer-events: none;
 }
 .progress-wrap:hover .progress-thumb { transform: translate(-50%, -50%) scale(1); }
+.tabular-nums { font-variant-numeric: tabular-nums; }
+
 #player-progress {
     position: absolute;
-    inset: -6px 0;
+    inset: -12px 0;
     width: 100%;
-    height: calc(100% + 12px);
+    height: calc(100% + 24px);
     opacity: 0;
     cursor: pointer;
     z-index: 3;
 }
 
-.tabular-nums { font-variant-numeric: tabular-nums; }
+#volume-slider {
+    position: absolute;
+    inset: -12px 0;
+    width: 100%;
+    height: calc(100% + 24px);
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+}
 
 .player-art {
-    width: 44px;
-    height: 44px;
     border-radius: 6px;
     flex-shrink: 0;
     overflow: hidden;
