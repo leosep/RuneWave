@@ -220,6 +220,7 @@ namespace SpotifyClone.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+
             modelBuilder.Entity("SpotifyClone.Models.Favorite", b =>
                 {
                     b.Property<int>("Id")
