@@ -43,8 +43,16 @@ function clearPlayerState() {
     localStorage.removeItem(STORAGE_KEY);
 }
 
+function destroyAudio() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.src = '';
+        currentAudio.load();
+    }
+}
+
 function playSong(songId, songTitle, filePath, buttonId) {
-    if (currentAudio) currentAudio.pause();
+    destroyAudio();
 
     const existingIdx = playlist.findIndex(s => s.id === songId);
     if (existingIdx >= 0) {
@@ -59,7 +67,7 @@ function playSong(songId, songTitle, filePath, buttonId) {
     const artistEl = buttonId ? document.querySelector('#' + buttonId + ' ~ .song-artist, #' + buttonId + ' + .song-artist, #' + buttonId).closest('.song-card')?.querySelector('.song-artist') : null;
     if (artistEl) currentSong.artist = artistEl.textContent;
 
-    const streamUrl = '/Songs/Stream/' + songId;
+    const streamUrl = filePath && filePath !== '' ? filePath : '/Songs/Stream/' + songId;
     currentAudio = new Audio(streamUrl);
 
     currentAudio.addEventListener('loadedmetadata', function() {
@@ -105,8 +113,63 @@ function playSong(songId, songTitle, filePath, buttonId) {
     savePlayerState();
 }
 
+function playStreamUrl(id, name, country, streamUrl, buttonId) {
+    destroyAudio();
+
+    updatePlayerArt('');
+    document.getElementById('player-song-title').textContent = name || 'Unknown';
+    document.getElementById('player-artist').textContent = country || '';
+    document.getElementById('player-progress').value = 0;
+    document.getElementById('player-current-time').textContent = '0:00';
+    document.getElementById('player-duration').textContent = '∞';
+    document.getElementById('play-icon').textContent = '⏸';
+
+    const songId = 'stream-' + id;
+    playlist = [{ id: songId, title: name, artist: country, filePath: '/Emissors/Stream/' + id }];
+    currentIndex = 0;
+    currentSong = { id: songId, title: name, artist: country, albumArtUrl: '' };
+    showLoadingSpinner(buttonId);
+    currentAudio = new Audio('/Emissors/Stream/' + id);
+
+    var loadTimer = setTimeout(function() {
+        hideLoadingSpinner(buttonId);
+        document.getElementById('play-icon').textContent = '▶';
+        destroyAudio();
+        alert('Could not connect to the radio station. The stream may be offline or the server is unreachable.');
+    }, 15000);
+
+    currentAudio.addEventListener('loadedmetadata', function() {
+        clearTimeout(loadTimer);
+        hideLoadingSpinner(buttonId);
+        updatePlayerUI();
+    });
+
+    currentAudio.addEventListener('canplay', function() {
+        clearTimeout(loadTimer);
+        hideLoadingSpinner(buttonId);
+        updatePlayerUI();
+    });
+
+    currentAudio.addEventListener('error', function() {
+        clearTimeout(loadTimer);
+        hideLoadingSpinner(buttonId);
+        if (!buttonId) document.getElementById('play-icon').textContent = '▶';
+        alert('Could not play the radio station. The stream may be offline.');
+    });
+
+    currentAudio.volume = volume / 100;
+    currentAudio.play().catch(function() {
+        clearTimeout(loadTimer);
+        hideLoadingSpinner(buttonId);
+        alert('Could not play the radio station. The stream may be offline.');
+    });
+
+    updatePlayerUI();
+    savePlayerState();
+}
+
 function playSongExt(songId, songTitle, songArtist, songArtUrl, buttonId) {
-    if (currentAudio) currentAudio.pause();
+    destroyAudio();
 
     const existingIdx = playlist.findIndex(s => s.id === songId);
     if (existingIdx >= 0) {
@@ -123,7 +186,6 @@ function playSongExt(songId, songTitle, songArtist, songArtUrl, buttonId) {
     showLoadingSpinner(buttonId);
 
     const streamUrl = '/Songs/Stream/' + songId;
-    if (currentAudio) currentAudio.pause();
     currentAudio = new Audio(streamUrl);
 
     currentAudio.addEventListener('loadedmetadata', function() {
@@ -489,8 +551,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (volumeSlider) volumeSlider.value = volume;
         if (volumeFill) volumeFill.style.width = volume + '%';
 
-        const streamUrl = '/Songs/Stream/' + currentSong.id;
-        currentAudio = new Audio(streamUrl);
+        var restoreUrl = '';
+        if (playlist[currentIndex] && playlist[currentIndex].filePath) {
+            restoreUrl = playlist[currentIndex].filePath;
+        } else {
+            restoreUrl = '/Songs/Stream/' + currentSong.id;
+        }
+        if (!restoreUrl) { clearPlayerState(); currentAudio = null; currentSong = null; updatePlayerUI(); return; }
+
+        currentAudio = new Audio(restoreUrl);
 
         currentAudio.addEventListener('loadedmetadata', function() {
             updatePlayerArt(currentSong.albumArtUrl || '');
@@ -508,6 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentAudio.addEventListener('canplay', function() { hideLoadingSpinner(); updatePlayerUI(); });
 
         currentAudio.addEventListener('timeupdate', function() {
+            if (!currentAudio) return;
             const t = currentAudio.currentTime;
             const d = currentAudio.duration || 1;
             document.getElementById('player-progress').value = t;
@@ -519,7 +589,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         currentAudio.addEventListener('ended', function() {
             document.getElementById('play-icon').textContent = '▶';
-            fetch('/Songs/TrackPlay', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ songId: currentSong.id }) });
+            if (currentSong.id && !currentSong.id.toString().startsWith('stream-')) {
+                fetch('/Songs/TrackPlay', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ songId: currentSong.id }) });
+            }
             nextSong();
         });
 

@@ -1,0 +1,209 @@
+[
+  {
+    "id": 1,
+    "name": "Z101",
+    "country": "Dominican Republic",
+    "streamUrl": "https://streaming.z101digital.com/z101?cb=1",
+    "logoUrl": "",
+    "category": "News / Talk",
+    "description": "The most widely broadcast station in the Dominican Republic. Home of 'El Gobierno de la Mañana'."
+  },
+  {
+    "id": 2,
+    "name": "Tropical 100 Salsa",
+    "country": "Dominican Republic",
+    "streamUrl": "https://stream-107.zeno.fm/cjgfujr8yhbvv?zs=VsqKiPTASc-XIz7P9HnYjQ",
+    "logoUrl": "",
+    "category": "Salsa",
+    "description": "Salsa music 24/7 from Santiago de los Caballeros."
+  },
+  {
+    "id": 3,
+    "name": "Ritmo 96.5 FM",
+    "country": "Dominican Republic",
+    "streamUrl": "https://stream-49.zeno.fm/y0br5ck4ququv?zs=2R5Njz6XShSzNF_ProbdIA",
+    "logoUrl": "",
+    "category": "Latin Pop",
+    "description": "Latin pop and top 40 from Santo Domingo."
+  },
+  {
+    "id": 4,
+    "name": "Bachata Radio",
+    "country": "Dominican Republic",
+    "streamUrl": "http://radio.domiplay.net:8002/",
+    "logoUrl": "",
+    "category": "Bachata",
+    "description": "The best Dominican bachata live."
+  },
+  {
+    "id": 5,
+    "name": "Primera 88.1",
+    "country": "Dominican Republic",
+    "streamUrl": "http://stream.radiojar.com/5705c71sn2zuv",
+    "logoUrl": "",
+    "category": "News / Talk",
+    "description": "News and opinion radio from Santo Domingo."
+  },
+  {
+    "id": 6,
+    "name": "Disco 89 FM",
+    "country": "Dominican Republic",
+    "streamUrl": "https://rgradio.net/disco89/disco89.mp3",
+    "logoUrl": "",
+    "category": "Ballads / Romantic",
+    "description": "Spanish ballads and romantic music."
+  },
+  {
+    "id": 7,
+    "name": "Amor FM 91.9",
+    "country": "Dominican Republic",
+    "streamUrl": "http://radio.domiplay.net:9190/",
+    "logoUrl": "",
+    "category": "Romantic",
+    "description": "Romantic music and ballads."
+  },
+  {
+    "id": 8,
+    "name": "Latina 104",
+    "country": "Dominican Republic",
+    "streamUrl": "https://radio.dominiserver.com/proxy/latina104?mp=/stream",
+    "logoUrl": "",
+    "category": "Merengue / Salsa",
+    "description": "Merengue, bachata and Dominican salsa."
+  },
+  {
+    "id": 9,
+    "name": "Suave 107.3 FM",
+    "country": "Dominican Republic",
+    "streamUrl": "https://stream.zeno.fm/cta80ru8na0uv",
+    "logoUrl": "",
+    "category": "Romantic",
+    "description": "Spanish ballads and romantic music from Santiago."
+  },
+  {
+    "id": 10,
+    "name": "Dominicana FM",
+    "country": "Dominican Republic",
+    "streamUrl": "https://protvradiostream.com:8610/",
+    "logoUrl": "",
+    "category": "Variety",
+    "description": "Tropical music, merengue, bachata, salsa and news."
+  },
+  {
+    "id": 11,
+    "name": "Top Merengue Radio",
+    "country": "Dominican Republic",
+    "streamUrl": "https://radio.dominiserver.com/proxy/topmerengueradio?mp=/stream",
+    "logoUrl": "",
+    "category": "Merengue",
+    "description": "The best Dominican merengue 24/7."
+  },
+  {
+    "id": 12,
+    "name": "Salsa 92.7 FM",
+    "country": "Dominican Republic",
+    "streamUrl": "https://stream.zeno.fm/h7lnwv51bh5uv",
+    "logoUrl": "",
+    "category": "Salsa",
+    "description": "Salsa from Santiago de los Caballeros."
+  },
+  {
+    "id": 13,
+    "name": "FieraMix",
+    "country": "Dominican Republic",
+    "streamUrl": "https://c11.radioboss.fm:18269/stream",
+    "logoUrl": "",
+    "category": "Latin",
+    "description": "Bachata, merengue and Latin music from Punta Cana."
+  },
+  {
+    "id": 14,
+    "name": "France Info",
+    "country": "France",
+    "streamUrl": "http://direct.franceinfo.fr/live/franceinfo-midfi.mp3",
+    "logoUrl": "",
+    "category": "News",
+    "description": "French continuous news radio."
+  },
+  {
+    "id": 15,
+    "name": "France Inter",
+    "country": "France",
+    "streamUrl": "https://stream.radiofrance.fr/franceinter/franceinter_hifi.m3u8?id=radiofrance",
+    "logoUrl": "",
+    "category": "General",
+    "description": "French public general radio."
+  },
+  {
+    "id": 16,
+    "name": "BBC World Service",
+    "country": "United Kingdom",
+    "streamUrl": "http://stream.live.vc.bbcmedia.co.uk/bbc_world_service",
+    "logoUrl": "",
+    "category": "News",
+    "description": "BBC world service in English."
+  },
+  {
+    "id": 17,
+    "name": "Cadena 100",
+    "country": "Spain",
+    "streamUrl": "http://cadena100-streamers-mp3.flumotion.com/cope/cadena100.mp3",
+    "logoUrl": "",
+    "category": "Music",
+    "description": "Current music and Spanish hits."
+  },
+  {
+    "id": 18,
+    "name": "esRadio",
+    "country": "Spain",
+    "streamUrl": "http://livestreaming.esradio.fm/stream64.mp3",
+    "logoUrl": "",
+    "category": "News / Talk",
+    "description": "News and opinion radio from Madrid."
+  },
+  {
+    "id": 19,
+    "name": "Deutschlandfunk",
+    "country": "Germany",
+    "streamUrl": "https://st01.sslstream.dlf.de/dlf/01/128/mp3/stream.mp3?aggregator=web",
+    "logoUrl": "",
+    "category": "News / Culture",
+    "description": "German public radio for information and culture."
+  },
+  {
+    "id": 20,
+    "name": "Radio Italia",
+    "country": "Italy",
+    "streamUrl": "https://radioitaliasmi.akamaized.net/hls/live/2093120/RISMI/stream01/streamPlaylist.m3u8",
+    "logoUrl": "",
+    "category": "Italian Music",
+    "description": "Only Italian music 24/7."
+  },
+  {
+    "id": 21,
+    "name": "Radio 538",
+    "country": "Netherlands",
+    "streamUrl": "http://playerservices.streamtheworld.com/api/livestream-redirect/RADIO538.mp3",
+    "logoUrl": "",
+    "category": "Pop / Dance",
+    "description": "Dutch pop and dance radio."
+  },
+  {
+    "id": 22,
+    "name": "102.7 KIIS FM",
+    "country": "United States",
+    "streamUrl": "https://stream.revma.ihrhls.com/zc185",
+    "logoUrl": "",
+    "category": "Pop / Top 40",
+    "description": "Los Angeles. Pop and top 40 music."
+  },
+  {
+    "id": 23,
+    "name": "101 Smooth Jazz",
+    "country": "United States",
+    "streamUrl": "http://jking.cdnstream1.com/b22139_128mp3",
+    "logoUrl": "",
+    "category": "Jazz",
+    "description": "Smooth jazz and easy listening."
+  }
+]

@@ -46,6 +46,23 @@
         });
     </script>
 
+    <script>
+        const pageSongs = [
+            @foreach (var song in Model)
+            {
+                @:{ id: @song.Id, title: '@song.Title?.Replace("'", "\\'")', artist: '@song.Artist?.Replace("'", "\\'")', albumArtUrl: '@song.AlbumArtUrl?.Replace("'", "\\'")' },
+            }
+        ];
+
+        function playFromPage(songId, buttonId) {
+            const song = pageSongs.find(s => s.id === songId);
+            if (!song) return;
+            setPlaylist(pageSongs);
+            currentIndex = pageSongs.findIndex(s => s.id === songId) - 1;
+            playSongExt(song.id, song.title, song.artist, song.albumArtUrl, buttonId);
+        }
+    </script>
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach (var song in Model)
         {
@@ -64,7 +81,7 @@
                 <p class="text-gray-300">@song.Artist</p>
                 <p class="text-gray-400 text-sm">@song.Album</p>
                 <div class="flex space-x-2 mt-4">
-                    <button onclick="playSongExt(@song.Id, '@song.Title', '@song.Artist', '@song.AlbumArtUrl', 'play-btn-@song.Id')" class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded relative song-card" id="play-btn-@song.Id">
+                    <button onclick="playFromPage(@song.Id, 'play-btn-@song.Id')" class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded relative song-card" id="play-btn-@song.Id">
                         <span class="play-spinner-@song.Id hidden absolute inset-0 flex items-center justify-center">
                             <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
