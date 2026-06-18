@@ -74,6 +74,12 @@ function playSong(songId, songTitle, filePath, buttonId, albumArtUrl) {
     const streamUrl = filePath && filePath !== '' ? filePath : '/Songs/Stream/' + songId;
     currentAudio = new Audio(streamUrl);
 
+    document.getElementById('player-progress').value = 0;
+    document.getElementById('player-progress').max = 1;
+    document.getElementById('player-current-time').textContent = '0:00';
+    document.getElementById('player-duration').textContent = '0:00';
+    updateProgressFill(0, 1);
+
     currentAudio.addEventListener('loadedmetadata', function() {
         updatePlayerArt(albumArtUrl || '');
         document.getElementById('player-song-title').textContent = songTitle || 'Unknown';
@@ -201,6 +207,12 @@ function playSongExt(songId, songTitle, songArtist, songArtUrl, buttonId) {
 
     const streamUrl = '/Songs/Stream/' + songId;
     currentAudio = new Audio(streamUrl);
+
+    document.getElementById('player-progress').value = 0;
+    document.getElementById('player-progress').max = 1;
+    document.getElementById('player-current-time').textContent = '0:00';
+    document.getElementById('player-duration').textContent = '0:00';
+    updateProgressFill(0, 1);
 
     currentAudio.addEventListener('loadedmetadata', function() {
         if (gen !== _playGen) return;
