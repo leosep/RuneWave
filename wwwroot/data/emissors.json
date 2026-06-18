@@ -205,5 +205,86 @@
     "logoUrl": "",
     "category": "Jazz",
     "description": "Smooth jazz and easy listening."
+  },
+  {
+    "id": 24,
+    "name": "iHeartRadio Classic Rock",
+    "country": "United States",
+    "streamUrl": "https://stream.revma.ihrhls.com/zc1581",
+    "logoUrl": "",
+    "category": "Rock",
+    "description": "Classic rock hits from the 60s, 70s and 80s via iHeartRadio."
+  },
+  {
+    "id": 25,
+    "name": "iHeartRadio 80s Rock",
+    "country": "United States",
+    "streamUrl": "https://stream.revma.ihrhls.com/zc1589",
+    "logoUrl": "",
+    "category": "Rock",
+    "description": "The biggest rock songs of the 80s via iHeartRadio."
+  },
+  {
+    "id": 26,
+    "name": "KEXP 90.3 FM",
+    "country": "United States",
+    "streamUrl": "https://kexp-mp3-128.streamguys1.com/kexp128.mp3",
+    "logoUrl": "",
+    "category": "Rock / Indie",
+    "description": "Seattle. Independent music, rock, alternative and world music."
+  },
+  {
+    "id": 27,
+    "name": "Absolute Radio",
+    "country": "United Kingdom",
+    "streamUrl": "http://stream-mp3aac.live.absoluteradio.co.uk/absoluteradio/aac/high",
+    "logoUrl": "",
+    "category": "Rock",
+    "description": "UK rock and indie from London."
+  },
+  {
+    "id": 28,
+    "name": "Planet Rock",
+    "country": "United Kingdom",
+    "streamUrl": "http://stream-mp3aac.live.absoluteradio.co.uk/planetrock/aac/high",
+    "logoUrl": "",
+    "category": "Rock",
+    "description": "Classic rock, hard rock and metal from the UK."
+  },
+  {
+    "id": 29,
+    "name": "Radio Paradise",
+    "country": "United States",
+    "streamUrl": "https://stream.radioparadise.com/mp3-128",
+    "logoUrl": "",
+    "category": "Rock / Eclectic",
+    "description": "Eclectic rock, indie and world music. Listener-supported radio."
+  },
+  {
+    "id": 30,
+    "name": "Rock FM",
+    "country": "Spain",
+    "streamUrl": "http://rockfm-cope.flumotion.com/playlist.m3u8",
+    "logoUrl": "",
+    "category": "Rock",
+    "description": "Spanish rock station broadcasting rock classics and current hits."
+  },
+  {
+    "id": 31,
+    "name": "Triple M Rock",
+    "country": "Australia",
+    "streamUrl": "https://ic1.sslstream.com/triplem_sydney",
+    "logoUrl": "",
+    "category": "Rock",
+    "description": "Australian rock station from Sydney. Classic and modern rock."
+  },
+  {
+    "id": 32,
+    "name": "WSOU 89.5 FM",
+    "country": "United States",
+    "streamUrl": "http://stream.wsou.net:8000/wsou",
+    "logoUrl": "",
+    "category": "Hard Rock / Metal",
+    "description": "Seton Hall University. The best in hard rock and metal."
   }
 ]
