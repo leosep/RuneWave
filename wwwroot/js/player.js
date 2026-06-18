@@ -54,7 +54,7 @@ function destroyAudio() {
     }
 }
 
-function playSong(songId, songTitle, filePath, buttonId) {
+function playSong(songId, songTitle, filePath, buttonId, albumArtUrl) {
     destroyAudio();
     _playGen++; var gen = _playGen;
 
@@ -67,7 +67,7 @@ function playSong(songId, songTitle, filePath, buttonId) {
     }
 
     showLoadingSpinner(buttonId);
-    currentSong = { id: songId, title: songTitle };
+    currentSong = { id: songId, title: songTitle, albumArtUrl: albumArtUrl || '' };
     const artistEl = buttonId ? document.querySelector('#' + buttonId + ' ~ .song-artist, #' + buttonId + ' + .song-artist, #' + buttonId).closest('.song-card')?.querySelector('.song-artist') : null;
     if (artistEl) currentSong.artist = artistEl.textContent;
 
@@ -75,7 +75,7 @@ function playSong(songId, songTitle, filePath, buttonId) {
     currentAudio = new Audio(streamUrl);
 
     currentAudio.addEventListener('loadedmetadata', function() {
-        updatePlayerArt(currentSong.albumArtUrl || '');
+        updatePlayerArt(albumArtUrl || '');
         document.getElementById('player-song-title').textContent = songTitle || 'Unknown';
         document.getElementById('player-progress').max = currentAudio.duration;
         document.getElementById('player-duration').textContent = formatTime(currentAudio.duration);
@@ -303,7 +303,7 @@ function nextSong() {
 
     currentIndex = nextIdx;
     const song = playlist[currentIndex];
-    playSong(song.id, song.title, song.filePath);
+    playSong(song.id, song.title, song.filePath, undefined, song.albumArtUrl);
 }
 
 function prevSong() {
@@ -325,7 +325,7 @@ function prevSong() {
 
     currentIndex = prevIdx;
     const song = playlist[currentIndex];
-    playSong(song.id, song.title, song.filePath);
+    playSong(song.id, song.title, song.filePath, undefined, song.albumArtUrl);
 }
 
 function toggleLoop() {
