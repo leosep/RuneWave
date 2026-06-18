@@ -56,13 +56,15 @@ public class EmissorsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Stream(int id)
+    public async Task Stream(int id)
     {
         var emissors = await LoadEmissorsAsync();
         var emissor = emissors.FirstOrDefault(e => e.Id == id);
         if (emissor == null || string.IsNullOrEmpty(emissor.StreamUrl))
         {
-            return NotFound("Station not found");
+            HttpContext.Response.StatusCode = 404;
+            await HttpContext.Response.WriteAsync("Station not found");
+            return;
         }
 
         var client = _httpClientFactory.CreateClient();
@@ -72,17 +74,36 @@ public class EmissorsController : Controller
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
             request.Headers.Add("Accept", "*/*");
 
-            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
             response.EnsureSuccessStatusCode();
 
             var contentType = response.Content.Headers.ContentType?.MediaType ?? "audio/mpeg";
-            var stream = await response.Content.ReadAsStreamAsync();
+            HttpContext.Response.StatusCode = 200;
+            HttpContext.Response.ContentType = contentType;
+            HttpContext.Response.Headers["Cache-Control"] = "no-store";
 
-            return File(stream, contentType);
+            var buffering = HttpContext.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>();
+            buffering?.DisableBuffering();
+
+            using var remoteStream = await response.Content.ReadAsStreamAsync();
+            await remoteStream.CopyToAsync(HttpContext.Response.Body);
+        }
+        catch (OperationCanceledException)
+        {
+            if (!HttpContext.Response.HasStarted)
+            {
+                HttpContext.Response.StatusCode = 504;
+                await HttpContext.Response.WriteAsync("The radio station did not respond in time.");
+            }
         }
         catch (Exception)
         {
-            return StatusCode(502, "Unable to reach the radio station stream");
+            if (!HttpContext.Response.HasStarted)
+            {
+                HttpContext.Response.StatusCode = 502;
+                await HttpContext.Response.WriteAsync("Unable to reach the radio station stream.");
+            }
         }
     }
 
