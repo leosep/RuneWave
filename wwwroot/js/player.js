@@ -128,9 +128,11 @@ function playStreamUrl(id, name, country, buttonId) {
     document.getElementById('player-song-title').textContent = name || 'Unknown';
     document.getElementById('player-artist').textContent = country || '';
     document.getElementById('player-progress').value = 0;
+    document.getElementById('player-progress').max = 1;
     document.getElementById('player-current-time').textContent = '0:00';
     document.getElementById('player-duration').textContent = '∞';
     document.getElementById('play-icon').textContent = '⏸';
+    updateProgressFill(0, 1);
 
     const songId = 'stream-' + id;
     playlist = [{ id: songId, title: name, artist: country, filePath: '/Emissors/Stream/' + id }];
@@ -381,9 +383,10 @@ function setVolume(value) {
 }
 
 function seekTo(value) {
-    if (currentAudio) {
+    if (currentAudio && currentSong && currentSong.id && currentSong.id.toString().startsWith('stream-')) return;
+    if (currentAudio && isFinite(currentAudio.duration)) {
         currentAudio.currentTime = value;
-        updateProgressFill(value, currentAudio.duration || 1);
+        updateProgressFill(value, currentAudio.duration);
     }
 }
 
@@ -584,11 +587,17 @@ document.addEventListener('DOMContentLoaded', function() {
             updatePlayerArt(currentSong.albumArtUrl || '');
             document.getElementById('player-song-title').textContent = currentSong.title || 'Unknown';
             document.getElementById('player-artist').textContent = currentSong.artist || '';
-            document.getElementById('player-progress').max = currentAudio.duration;
-            document.getElementById('player-duration').textContent = formatTime(currentAudio.duration);
-            const seekTime = Math.min(state.time || 0, currentAudio.duration);
-            currentAudio.currentTime = seekTime;
-            updateProgressFill(seekTime, currentAudio.duration);
+            if (isFinite(currentAudio.duration)) {
+                document.getElementById('player-progress').max = currentAudio.duration;
+                document.getElementById('player-duration').textContent = formatTime(currentAudio.duration);
+                const seekTime = Math.min(state.time || 0, currentAudio.duration);
+                currentAudio.currentTime = seekTime;
+                updateProgressFill(seekTime, currentAudio.duration);
+            } else {
+                document.getElementById('player-progress').max = 1;
+                document.getElementById('player-duration').textContent = '∞';
+                updateProgressFill(0, 1);
+            }
             updatePlayerUI();
             if (state.playing) currentAudio.play().catch(function() {});
         });
