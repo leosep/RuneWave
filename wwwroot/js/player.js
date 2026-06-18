@@ -9,6 +9,8 @@ let volume = 50;
 let lastSave = 0;
 let isMuted = false;
 let prevVolume = 50;
+let _radioLoadTimer = null;
+let _playGen = 0;
 
 const STORAGE_KEY = 'rw_player_state';
 
@@ -44,6 +46,7 @@ function clearPlayerState() {
 }
 
 function destroyAudio() {
+    if (_radioLoadTimer) { clearTimeout(_radioLoadTimer); _radioLoadTimer = null; }
     if (currentAudio) {
         currentAudio.pause();
         currentAudio.src = '';
@@ -53,6 +56,7 @@ function destroyAudio() {
 
 function playSong(songId, songTitle, filePath, buttonId) {
     destroyAudio();
+    _playGen++; var gen = _playGen;
 
     const existingIdx = playlist.findIndex(s => s.id === songId);
     if (existingIdx >= 0) {
@@ -85,6 +89,7 @@ function playSong(songId, songTitle, filePath, buttonId) {
     });
 
     currentAudio.addEventListener('timeupdate', function() {
+        if (gen !== _playGen) return;
         const t = currentAudio.currentTime;
         const d = currentAudio.duration || 1;
         document.getElementById('player-progress').value = t;
@@ -95,12 +100,14 @@ function playSong(songId, songTitle, filePath, buttonId) {
     });
 
     currentAudio.addEventListener('ended', function() {
+        if (gen !== _playGen) return;
         document.getElementById('play-icon').textContent = '▶';
         fetch('/Songs/TrackPlay', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ songId: songId }) });
         nextSong();
     });
 
     currentAudio.addEventListener('error', function() {
+        if (gen !== _playGen) return;
         hideLoadingSpinner(buttonId);
         if (!buttonId) document.getElementById('play-icon').textContent = '▶';
     });
@@ -113,8 +120,9 @@ function playSong(songId, songTitle, filePath, buttonId) {
     savePlayerState();
 }
 
-function playStreamUrl(id, name, country, streamUrl, buttonId) {
+function playStreamUrl(id, name, country, buttonId) {
     destroyAudio();
+    _playGen++; var gen = _playGen;
 
     updatePlayerArt('');
     document.getElementById('player-song-title').textContent = name || 'Unknown';
@@ -131,7 +139,7 @@ function playStreamUrl(id, name, country, streamUrl, buttonId) {
     showLoadingSpinner(buttonId);
     currentAudio = new Audio('/Emissors/Stream/' + id);
 
-    var loadTimer = setTimeout(function() {
+    _radioLoadTimer = setTimeout(function() {
         hideLoadingSpinner(buttonId);
         document.getElementById('play-icon').textContent = '▶';
         destroyAudio();
@@ -139,19 +147,22 @@ function playStreamUrl(id, name, country, streamUrl, buttonId) {
     }, 15000);
 
     currentAudio.addEventListener('loadedmetadata', function() {
-        clearTimeout(loadTimer);
+        if (gen !== _playGen) return;
+        clearTimeout(_radioLoadTimer); _radioLoadTimer = null;
         hideLoadingSpinner(buttonId);
         updatePlayerUI();
     });
 
     currentAudio.addEventListener('canplay', function() {
-        clearTimeout(loadTimer);
+        if (gen !== _playGen) return;
+        clearTimeout(_radioLoadTimer); _radioLoadTimer = null;
         hideLoadingSpinner(buttonId);
         updatePlayerUI();
     });
 
     currentAudio.addEventListener('error', function() {
-        clearTimeout(loadTimer);
+        if (gen !== _playGen) return;
+        clearTimeout(_radioLoadTimer); _radioLoadTimer = null;
         hideLoadingSpinner(buttonId);
         if (!buttonId) document.getElementById('play-icon').textContent = '▶';
         alert('Could not play the radio station. The stream may be offline.');
@@ -159,7 +170,7 @@ function playStreamUrl(id, name, country, streamUrl, buttonId) {
 
     currentAudio.volume = volume / 100;
     currentAudio.play().catch(function() {
-        clearTimeout(loadTimer);
+        clearTimeout(_radioLoadTimer); _radioLoadTimer = null;
         hideLoadingSpinner(buttonId);
         alert('Could not play the radio station. The stream may be offline.');
     });
@@ -170,6 +181,7 @@ function playStreamUrl(id, name, country, streamUrl, buttonId) {
 
 function playSongExt(songId, songTitle, songArtist, songArtUrl, buttonId) {
     destroyAudio();
+    _playGen++; var gen = _playGen;
 
     const existingIdx = playlist.findIndex(s => s.id === songId);
     if (existingIdx >= 0) {
@@ -189,6 +201,7 @@ function playSongExt(songId, songTitle, songArtist, songArtUrl, buttonId) {
     currentAudio = new Audio(streamUrl);
 
     currentAudio.addEventListener('loadedmetadata', function() {
+        if (gen !== _playGen) return;
         updatePlayerArt(songArtUrl);
         document.getElementById('player-song-title').textContent = songTitle || 'Unknown';
         document.getElementById('player-artist').textContent = songArtist || '';
@@ -197,12 +210,14 @@ function playSongExt(songId, songTitle, songArtist, songArtUrl, buttonId) {
     });
 
     currentAudio.addEventListener('canplay', function() {
+        if (gen !== _playGen) return;
         hideLoadingSpinner(buttonId);
         if (!buttonId) document.getElementById('play-icon').textContent = '⏸';
         updatePlayerUI();
     });
 
     currentAudio.addEventListener('timeupdate', function() {
+        if (gen !== _playGen) return;
         const t = currentAudio.currentTime;
         const d = currentAudio.duration || 1;
         document.getElementById('player-progress').value = t;
@@ -213,12 +228,14 @@ function playSongExt(songId, songTitle, songArtist, songArtUrl, buttonId) {
     });
 
     currentAudio.addEventListener('ended', function() {
+        if (gen !== _playGen) return;
         document.getElementById('play-icon').textContent = '▶';
         fetch('/Songs/TrackPlay', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ songId: songId }) });
         nextSong();
     });
 
     currentAudio.addEventListener('error', function() {
+        if (gen !== _playGen) return;
         hideLoadingSpinner(buttonId);
         if (!buttonId) document.getElementById('play-icon').textContent = '▶';
     });
@@ -559,9 +576,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (!restoreUrl) { clearPlayerState(); currentAudio = null; currentSong = null; updatePlayerUI(); return; }
 
+        _playGen++; var gen = _playGen;
         currentAudio = new Audio(restoreUrl);
 
         currentAudio.addEventListener('loadedmetadata', function() {
+            if (gen !== _playGen) return;
             updatePlayerArt(currentSong.albumArtUrl || '');
             document.getElementById('player-song-title').textContent = currentSong.title || 'Unknown';
             document.getElementById('player-artist').textContent = currentSong.artist || '';
@@ -574,9 +593,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (state.playing) currentAudio.play().catch(function() {});
         });
 
-        currentAudio.addEventListener('canplay', function() { hideLoadingSpinner(); updatePlayerUI(); });
+        currentAudio.addEventListener('canplay', function() { if (gen !== _playGen) return; hideLoadingSpinner(); updatePlayerUI(); });
 
         currentAudio.addEventListener('timeupdate', function() {
+            if (gen !== _playGen) return;
             if (!currentAudio) return;
             const t = currentAudio.currentTime;
             const d = currentAudio.duration || 1;
@@ -588,6 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         currentAudio.addEventListener('ended', function() {
+            if (gen !== _playGen) return;
             document.getElementById('play-icon').textContent = '▶';
             if (currentSong.id && !currentSong.id.toString().startsWith('stream-')) {
                 fetch('/Songs/TrackPlay', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ songId: currentSong.id }) });
@@ -596,6 +617,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         currentAudio.addEventListener('error', function() {
+            if (gen !== _playGen) return;
             hideLoadingSpinner();
             document.getElementById('play-icon').textContent = '▶';
             clearPlayerState();
